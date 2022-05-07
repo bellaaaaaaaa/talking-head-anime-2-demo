@@ -44,7 +44,7 @@ class EyebrowMorphingCombiner00(BatchInputModule):
         self.combine_alpha = self.args.create_alpha_block()
 
     def forward(self, background_layer: Tensor, eyebrow_layer: Tensor, pose: Tensor) -> List[Tensor]:
-        combined_image = torch.cat([background_layer, eyebrow_layer], dim=1)
+        combined_image = torch.cat([eyebrow_layer], dim=1)
         feature = self.body(combined_image, pose)[0]
 
         morphed_eyebrow_layer_grid_change = self.morphed_eyebrow_layer_grid_change(feature)
@@ -55,9 +55,9 @@ class EyebrowMorphingCombiner00(BatchInputModule):
             morphed_eyebrow_layer_alpha, morphed_eyebrow_layer_color_change, warped_eyebrow_layer)
 
         combine_alpha = self.combine_alpha(feature)
-        eyebrow_image = apply_rgb_change(combine_alpha, morphed_eyebrow_layer, background_layer)
+        eyebrow_image = apply_rgb_change(combine_alpha, morphed_eyebrow_layer)
         eyebrow_image_no_combine_alpha = apply_rgb_change(
-            (morphed_eyebrow_layer[:, 3:4, :, :] + 1.0) / 2.0, morphed_eyebrow_layer, background_layer)
+            (morphed_eyebrow_layer[:, 3:4, :, :] + 1.0) / 2.0, morphed_eyebrow_layer)
 
         return [
             eyebrow_image,  # 0

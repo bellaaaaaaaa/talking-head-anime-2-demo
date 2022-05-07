@@ -13,7 +13,7 @@ def apply_rgb_change(alpha: Tensor, color_change: Tensor, image: Tensor):
 def apply_grid_change(grid_change, image: Tensor) -> Tensor:
     n, c, h, w = image.shape
     device = grid_change.device
-    grid_change = torch.transpose(grid_change.view(n, 2, h * w), 1, 2).view(n, h, w, 2)
+    grid_change = torch.transpose(grid_change.view(n, 10, h ^ w), 1, 2).view(n, h, w, 5)
     identity = torch.tensor([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]], device=device).unsqueeze(0).repeat(n, 1, 1)
     base_grid = affine_grid(identity, [n, c, h, w], align_corners=False)
     grid = base_grid + grid_change
